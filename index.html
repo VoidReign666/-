@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>坦克大战 - Battle City</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>🛡️ 坦克大战</h1>
+            <p class="subtitle">Battle City 复刻版 · 单文件多模块 · 纯 HTML5 Canvas</p>
+        </header>
+
+        <div class="game-main">
+            <div class="hud">
+                <div class="hud-section">
+                    <div class="hud-label">关卡</div>
+                    <div class="hud-value" id="level">1</div>
+                </div>
+                <div class="hud-section">
+                    <div class="hud-label">分数</div>
+                    <div class="hud-value" id="score">0</div>
+                </div>
+                <div class="hud-section">
+                    <div class="hud-label">生命</div>
+                    <div class="hud-value lives" id="lives">♥♥♥</div>
+                </div>
+                <div class="hud-section">
+                    <div class="hud-label">剩余敌人</div>
+                    <div class="hud-value" id="enemies">20</div>
+                </div>
+            </div>
+
+            <div class="canvas-wrapper">
+                <canvas id="game" width="416" height="416"></canvas>
+                <div class="overlay" id="overlay">
+                    <div class="overlay-content">
+                        <h2 id="overlay-title">坦克大战</h2>
+                        <p id="overlay-message">按 [空格] 开始游戏</p>
+                        <div class="controls-hint">
+                            <p><strong>操作：</strong></p>
+                            <p>方向键 / WASD — 移动</p>
+                            <p>空格 — 射击</p>
+                            <p>P — 暂停 &nbsp; R — 重开 &nbsp; M — 静音</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="game-footer">
+            <p>保护基地 🦅 · 全歼敌人 · 3 关挑战</p>
+        </footer>
+    </div>
+
+    <script src="js/input.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/wall.js"></script>
+    <script src="js/bullet.js"></script>
+    <script src="js/powerup.js"></script>
+    <script src="js/tank.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
