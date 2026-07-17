@@ -230,6 +230,14 @@ class Game {
             this.checkBulletHit(b, i);
         }
 
+        // 清理已死亡的子弹 (从坦克自己的 bullets 数组里), 不然 maxBullets 永远卡满
+        if (this.player) {
+            this.player.bullets = this.player.bullets.filter(b => b.alive);
+        }
+        for (const e of this.enemiesOnField) {
+            e.bullets = e.bullets.filter(b => b.alive);
+        }
+
         // 玩家子弹 vs 玩家 (不能打自己)
         // 敌人子弹 vs 玩家
         // 玩家子弹 vs 敌人
@@ -322,9 +330,21 @@ class Game {
         // 朝当前方向移动
         this.player.tryMove(this);
 
-        if (Input.wasPressed('shoot')) {
+        // === 无限火力 ===
+        // 兼容两种手感:
+        //   1) 点按一下射一发 (wasPressed) - 单发
+        //   2) 长按连射 (isDown) - 无限火力
+        // 长按时按 110ms 一发的节奏 (约 9 发/秒), 不会卡顿
+        const now = performance.now();
+        if (!this.playerShootCooldown) this.playerShootCooldown = 0;
+        const canRapidFire = Input.isDown('shoot') && now >= this.playerShootCooldown;
+        const canSingleFire = Input.wasPressed('shoot');
+        if (canRapidFire || canSingleFire) {
             const bullet = this.player.shoot();
-            if (bullet) this.bullets.push(bullet);
+            if (bullet) {
+                this.bullets.push(bullet);
+                this.playerShootCooldown = now + 110;
+            }
         }
     }
 

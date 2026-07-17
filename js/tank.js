@@ -43,7 +43,7 @@ class Tank {
         switch (this.type) {
             case 'player':
                 this.speed = 1.0;       // 经典 Battle City 1px/frame 手感
-                this.maxBullets = 1;
+                this.maxBullets = 100;  // 无限火力 (设大点, 加上死亡清理, 实际等于无限)
                 this.bulletPower = 1;
                 break;
             case 'enemy_basic':
