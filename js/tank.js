@@ -42,33 +42,33 @@ class Tank {
     setStatsByType() {
         switch (this.type) {
             case 'player':
-                this.speed = 1.8;
+                this.speed = 1.0;       // 经典 Battle City 1px/frame 手感
                 this.maxBullets = 1;
                 this.bulletPower = 1;
                 break;
             case 'enemy_basic':
-                this.speed = 1.2;
+                this.speed = 0.7;       // 慢, 让你能躲
                 this.maxBullets = 1;
                 this.bulletPower = 1;
                 this.aiChangeDirInterval = 1500;
                 break;
             case 'enemy_fast':
-                this.speed = 2.0;
+                this.speed = 1.4;       // 跟玩家差不多
                 this.maxBullets = 1;
                 this.bulletPower = 1;
                 this.aiChangeDirInterval = 800;
                 break;
             case 'enemy_power':
-                this.speed = 1.5;
+                this.speed = 0.9;
                 this.maxBullets = 1;
-                this.bulletPower = 2; // 可打钢
+                this.bulletPower = 2;    // 可打钢
                 this.aiChangeDirInterval = 1200;
                 break;
             case 'enemy_armor':
-                this.speed = 1.3;
+                this.speed = 0.8;
                 this.maxBullets = 1;
                 this.bulletPower = 1;
-                this.armor = 4; // 4 发才死
+                this.armor = 4;         // 4 发才死
                 this.aiChangeDirInterval = 1300;
                 break;
         }
