@@ -42,6 +42,7 @@ class Game {
         this.player = null;
         this.bullets = [];
         this.powerups = [];
+        this.sparks = []; // 子弹撞抵消时的火花粒子
 
         this.frozenTime = 0;
         this.baseProtectedTime = 0;
@@ -241,8 +242,9 @@ class Game {
         // 玩家子弹 vs 玩家 (不能打自己)
         // 敌人子弹 vs 玩家
         // 玩家子弹 vs 敌人
-        // 子弹 vs 子弹
+        // 子弹 vs 子弹 (任何阵营相撞都抵消, 喷火花)
         this.checkBulletCollisions();
+        this.updateSparks();
 
         // 敌人死亡 -> 30% 掉道具
         for (let i = this.enemiesOnField.length - 1; i >= 0; i--) {
@@ -380,9 +382,12 @@ class Game {
                 if (i === j) continue;
                 const b = this.bullets[j];
                 if (!b.alive) continue;
-                // 同阵营不互打
-                if (a.owner === b.owner) continue;
+                // 任何两颗子弹相撞都互相抵消 (不管同不同阵营)
                 if (this.collide(a.getBounds(), b.getBounds())) {
+                    // 碰撞点 = 两颗子弹中心的中点
+                    const cx = (a.x + b.x) / 2;
+                    const cy = (a.y + b.y) / 2;
+                    this.spawnSparks(cx, cy);
                     a.alive = false;
                     b.alive = false;
                     this.bullets.splice(i, 1);
@@ -393,6 +398,45 @@ class Game {
                 }
             }
         }
+    }
+
+    // 子弹相撞的火花
+    spawnSparks(x, y) {
+        // 不同阵营颜色不同, 同阵营就白色
+        for (let i = 0; i < 8; i++) {
+            const angle = (Math.PI * 2 * i) / 8 + Math.random() * 0.5;
+            const speed = 2 + Math.random() * 2;
+            this.sparks.push({
+                x, y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 220, // ms
+                maxLife: 220,
+                size: 2 + Math.random() * 2,
+            });
+        }
+    }
+
+    updateSparks() {
+        for (let i = this.sparks.length - 1; i >= 0; i--) {
+            const s = this.sparks[i];
+            s.x += s.vx;
+            s.y += s.vy;
+            s.vx *= 0.92; // 摩擦
+            s.vy *= 0.92;
+            s.life -= 16;
+            if (s.life <= 0) this.sparks.splice(i, 1);
+        }
+    }
+
+    drawSparks(ctx) {
+        for (const s of this.sparks) {
+            const a = Math.max(0, s.life / s.maxLife);
+            ctx.globalAlpha = a;
+            ctx.fillStyle = '#fff8a0';
+            ctx.fillRect(s.x - s.size / 2, s.y - s.size / 2, s.size, s.size);
+        }
+        ctx.globalAlpha = 1;
     }
 
     // 通用碰撞 (AABB)
@@ -513,6 +557,9 @@ class Game {
 
         // 子弹
         for (const b of this.bullets) b.draw(ctx);
+
+        // 子弹相撞的火花 (画在子弹上方, 但在特效下方)
+        this.drawSparks(ctx);
 
         // 冰冻效果
         if (this.frozenTime > 0) {
