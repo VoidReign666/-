@@ -323,7 +323,8 @@ class Game {
         this.player.tryMove(this);
 
         if (Input.wasPressed('shoot')) {
-            this.player.shoot();
+            const bullet = this.player.shoot();
+            if (bullet) this.bullets.push(bullet);
         }
     }
 

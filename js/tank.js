@@ -140,7 +140,7 @@ class Tank {
     }
 
     shoot() {
-        if (this.bullets.length >= this.maxBullets) return false;
+        if (this.bullets.length >= this.maxBullets) return null;
         const power = this.powerShotTime > 0 ? this.bulletPower + 1 : this.bulletPower;
         const dx = DIR_DX[this.direction];
         const dy = DIR_DY[this.direction];
@@ -155,7 +155,7 @@ class Tank {
         if (this.powerShotTime > 0) bullet.speed = 6;
         this.bullets.push(bullet);
         Audio.shoot();
-        return true;
+        return bullet;
     }
 
     takeHit() {
@@ -201,7 +201,8 @@ class Tank {
         // 随机射击
         if (this.aiShootTimer > 800 + Math.random() * 600) {
             this.aiShootTimer = 0;
-            this.shoot();
+            const bullet = this.shoot();
+            if (bullet) game.bullets.push(bullet);
         }
     }
 
